@@ -1,0 +1,89 @@
+import React, { Component } from 'react';
+import Rebase               from 're-base';
+import firebase             from 'firebase';
+
+import configJSON from './config/firebase';
+
+const fireApp = firebase.initializeApp(configJSON);
+const GitHubProv = new firebase.auth.GithubAuthProvider();
+
+const base = Rebase.createClass(firebaseApp.database());
+
+class App extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      users: {},
+      isLoading: true,
+    };
+  }
+
+  anonymousLogin() {
+    firebase.auth().signInAnonymously()
+      .then(uid => /* Do things with the uid of user */)
+      .catch(error => /* Handle the error */);
+  }
+
+  githubLogin() {
+    firebase.auth().signInWithPopup(GitHubProv)
+      .then(result => {
+        const token = result.credential.accessToken;
+        const user = result.user;
+        /* ... */
+      })
+      .catch(error => {
+        /* ... */
+      });
+  }
+
+
+  componentDidMount() {
+    base.bindToState('users', {
+      context: this,
+      state: 'users',
+    });
+
+    fireApp.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.setState({
+          isLoading: false
+        });
+      }
+      else {
+        this.setState({
+          isLoading: true
+        });
+        this.anonymousLogin();
+      }
+    });
+  }
+
+
+  render() {
+    const { users, isLoading } = this.state;
+    const firebaseSession = firebase.auth().currentUser;
+
+    return (
+      <main>
+        <header>
+          <h2><span aria-label="fire" role="img">🔥</span> Firebase Meetup <span aria-label="fire" role="img">🔥</span></h2>
+        </header>
+
+        { isLoading && <img alt="loading" className="loading" src={wheel} /> }
+
+        { !isLoading && firebaseSession && <Logout firebase={firebase} /> }
+
+        {
+          !isLoading &&
+          firebaseSession &&
+          _.has(users, firebaseSession.uid) && (
+          <Welcome currentUser={ _.get(users, firebaseSession.uid, null) } />
+        )}
+
+      </main>
+    )
+  }
+}
+
+export default App;

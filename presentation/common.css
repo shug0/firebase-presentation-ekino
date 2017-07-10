@@ -1,0 +1,19 @@
+.Title {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 4rem !important;
+    font-weight: 100 !important;
+    padding-bottom: 2rem !important;
+}
+
+code, kbd, pre, samp {
+    font-size: 0.9em !important;
+}
+
+img {
+    max-width: 100%;
+    border-radius: 15px;
+}
+
+marquee {
+    border-radius: 60px;
+}

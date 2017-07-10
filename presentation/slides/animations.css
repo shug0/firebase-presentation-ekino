@@ -1,0 +1,15 @@
+@keyframes leftToRight {
+    from {
+        left: 0%;
+    }
+    to {
+        left: calc(-100%);
+    }
+}
+
+.leftToRight {
+    position: absolute;
+    animation-name: leftToRight !important;
+    animation-duration: 4s !important;
+    animation-iteration-count: infinite;
+}
